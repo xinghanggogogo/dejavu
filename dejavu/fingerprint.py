@@ -16,7 +16,7 @@ IDX_TIME_J = 1
 DEFAULT_FS = 44100
 
 ######################################################################
-# Size of the FFT window, affects frequency granularity
+# Size of the FFT window, affects frequency granularity DEFAULT_WINDOW_SIZE = 4096
 DEFAULT_WINDOW_SIZE = 4096
 
 ######################################################################
