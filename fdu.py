@@ -13,7 +13,7 @@ with open("dejavu.cnf") as f:
 djv = Dejavu(config)
 
 from pyelasticsearch import ElasticSearch
-es = ElasticSearch(urls='http://106.75.97.4', 
+es = ElasticSearch(urls='', 
                    username='elastic',
                    password='changeme')
 
