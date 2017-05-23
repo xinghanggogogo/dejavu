@@ -1,0 +1,10 @@
+{
+    "database": {
+        "host": "127.0.0.1",
+        "port": 3308,
+        "user": "dbsync",
+        "passwd": "dbsync123", 
+        "db": "dejavu"
+    },
+    "fingerprint_limit": 100 
+}

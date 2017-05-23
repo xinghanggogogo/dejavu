@@ -1,6 +1,5 @@
 *.pyc
 *.wav
 .DS_Store
-*.cnf
 *.swp
 *.swo
