@@ -13,70 +13,11 @@ with open("dejavu.cnf") as f:
 djv = Dejavu(config)
 
 from pyelasticsearch import ElasticSearch
-es = ElasticSearch(urls='', 
+es = ElasticSearch(urls='http://106.75.97.4', 
                    username='elastic',
                    password='changeme')
 
-import peewee as pw
-DB = pw.MySQLDatabase("dejavu",
-                       host="127.0.0.1",
-                       port=3308,
-                       user="dbsync",
-                       passwd="dbsync123")
-
-
-class MySQLModel(pw.Model):
-    class Meta:
-        database = DB
-
-
-class ThunderSong(MySQLModel):
-    id = pw.IntegerField()
-    thunder_id = pw.CharField()
-    name = pw.CharField()
-    artist1 = pw.CharField()
-    artist2 = pw.CharField()
-    artist3 = pw.CharField()
-    artist4 = pw.CharField()
-    duration = pw.IntegerField()
-    download_link = pw.CharField()
-    has_krc = pw.IntegerField()
-    dejavu_list = pw.CharField()
-
-    class Meta:
-        db_table = 'thunder_song'
-
-
-class KugouKrcSong(MySQLModel):
-    id = pw.IntegerField()
-    o2o_id = pw.IntegerField()
-    krc_link = pw.CharField()
-    download_link = pw.CharField()
-
-    class Meta:
-        db_table = 'kugou_krc_song'
-
-
-class FingerPrints(MySQLModel):
-    hash = pw.CharField()
-    song_id = pw.IntegerField()
-    offset = pw.IntegerField()
-
-    class Meta:
-        db_table = 'fingerprints'
-
-
-class DejavuSongs(MySQLModel):
-    song_id = pw.IntegerField()
-    song_name = pw.CharField()
-    fingerprinted = pw.IntegerField()
-    file_sha1 = pw.IntegerField()
-
-    class Meta:
-        db_table = 'songs'
-
-
-DB.connect()
+from db import ThunderSong, KugouKrcSong, FingerPrints, DejavuSongs 
 
 kcloud = 'http://kcloud.v2.service.ktvdaren.com/MusicService.aspx?op=getksdownurl&timeout=30&url='
 internal_url= 'o2omusic.ks3-cn-beijing-internal.ksyun.com'
@@ -96,7 +37,7 @@ for _id in range(1000, 1001):
     # res = res.read()
     # res = json.loads(res)
     # download_link = res.get('result')
-    # urllib.urlretrieve(download_link,'mp3/'+thunder_name+'.ts')
+    # urllib.urlretrieve(download_link,'t_music/'+thunder_name+'.ts')
 
     es_songs = es.search(index='song',
                          size=3,
@@ -109,6 +50,7 @@ for _id in range(1000, 1001):
     es_songs = [item['_source'] for item in es_songs]
 
     for item in es_songs:
+
         print item.get('id')
         print item.get('name')
         print item.get('artist')
@@ -132,7 +74,7 @@ for _id in range(1000, 1001):
     djv.fingerprint_directory("/data/dejavu", [".mp3"])
 
     print 100 * '*'
-    dejavu_song = djv.recognize(FileRecognizer, "mp3/地球好危险啊(HD).ts")
+    dejavu_song = djv.recognize(FileRecognizer, "t_music/地球好危险啊(HD).ts")
     o2o_id = dejavu_song.get('song_name').split('$')[0]
     confidence = dejavu_song.get('confidence')
     print dejavu_song.get('song_name')
@@ -145,9 +87,9 @@ for _id in range(1000, 1001):
     # q.execute()
 
     filelist=[]
-    dir="/home/work/dejavu/mp3"
+    dir="/data/dejavu"
     filelist=os.listdir(dir)
     for f in filelist:
         filepath = os.path.join(dir,f)
         os.remove(filepath)
-        print filepath+" removed!" 
+        print filepath + " removed!" 
